@@ -1,0 +1,30 @@
+{
+  "name": "crew-manager",
+  "version": "1.0.0",
+  "description": "Crew management — member tracking, certifications, license monitoring",
+  "category": "ops",
+  "entities": {
+    "produces": ["crew-member"],
+    "consumes": [],
+    "extends": {}
+  },
+  "tools": [
+    { "name": "add-member", "description": "Add a new crew member", "permissions": ["crew-member:write"] },
+    { "name": "update-certifications", "description": "Update a crew member's certifications and licenses", "permissions": ["crew-member:read", "crew-member:write"] },
+    { "name": "check-licenses", "description": "Check for expiring licenses across all crew members", "permissions": ["crew-member:read"] }
+  ],
+  "hooks": [
+    { "event": "LicenseExpiringSoon", "action": "alert-manager", "type": "post" }
+  ],
+  "dependencies": [],
+  "externalServices": [],
+  "config": {
+    "journeyman_to_apprentice_ratio": { "type": "string", "default": "1:2" },
+    "require_master_on_commercial": { "type": "boolean", "default": true },
+    "license_warning_days": { "type": "number", "default": 30 }
+  },
+  "agents": [],
+  "cron": [
+    { "name": "license-expiry-check", "schedule": "0 9 1 * *", "action": "check-license-expirations", "description": "Check for expiring crew licenses monthly" }
+  ]
+}
